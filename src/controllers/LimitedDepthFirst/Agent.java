@@ -28,7 +28,7 @@ public class Agent extends AbstractPlayer {
      * To avoid a circle,recording every return action
      * using a hash table will speed up checking
      */
-    private final int depth = 7;
+    private final int depth = 30;
     private static Queue<StateObservation> VisitedStateList = new LinkedList();
     private static double MaxScore = Double.NEGATIVE_INFINITY;
     private static Types.ACTIONS bestAction = Types.ACTIONS.ACTION_NIL;
@@ -60,7 +60,7 @@ public class Agent extends AbstractPlayer {
             stCopy.advance(action);
             if(DEBUG == true) System.out.println("action: " + action);
             if(IsLegalAction(stCopy.copy(), VisitedStateList)&&!tmp.equalPosition(stCopy.copy())){
-                LimDFS( StateStack, stCopy, action);
+                LimDFS( stCopy, StateStack, action);
             }
         }
         stCopy =   stateObs.copy();
@@ -168,7 +168,7 @@ public class Agent extends AbstractPlayer {
                 + "avator type: " + stateObs.getAvatarType()
                 );
     }
-    private void LimDFS(Stack<StateObservation> StateStack,StateObservation stCopy,final Types.ACTIONS action){
+    private void LimDFS(StateObservation stCopy,Stack<StateObservation> StateStack,final Types.ACTIONS action){
         boolean LoopTag = true;
         Queue<StateObservation> VisitedChildStateList = new LinkedList();
         if(DEBUG==true) System.out.println("LegalAction:------------" + action + " action:");

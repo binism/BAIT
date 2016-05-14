@@ -9,6 +9,7 @@ import core.game.Observation;
 import core.game.StateObservation;
 import core.player.AbstractPlayer;
 import java.util.ArrayList;
+import java.util.Iterator;
 import ontology.Types;
 import tools.ElapsedCpuTimer;
 import java.util.Stack;
@@ -142,44 +143,44 @@ public class Agent extends AbstractPlayer {
         }
     }
     private void FindGoalDFS(StateObservation stCopy, Stack<StateObservation> StateStack, Queue<StateObservation> VisitedStateList){
-         StateStack.push(stCopy.copy());
-            VisitedStateList.offer(stCopy.copy());
-            while(!StateStack.isEmpty()){
-                stCopy = StateStack.peek().copy();
-                ArrayList<Types.ACTIONS> actions = stCopy.getAvailableActions();
-                boolean HaveLegalMovement = false;
-                if(!actions.isEmpty()){
-                    for(int k = 0; k < actions.size(); k++){
-                        Types.ACTIONS action = actions.get(k);
-                        stCopy = StateStack.peek().copy();
-                        StateObservation tmp = stCopy.copy();
-                        stCopy.advance(action);
-                        if(DEBUG == true) System.out.println("action = " + action);
-                        if(IsLegalAction(stCopy.copy(),VisitedStateList)&&!tmp.equalPosition(stCopy)){
-                            if(DEBUG == true) System.out.println("LegalAction:------------" + action + " action:");
-                            StateStack.push(stCopy.copy());
-                            ActionList.add(action);
-                            HaveLegalMovement = true;
-                            break;
-                        }
+        StateStack.push(stCopy.copy());
+        VisitedStateList.offer(stCopy.copy());
+        while(!StateStack.isEmpty()){
+            stCopy = StateStack.peek().copy();
+            ArrayList<Types.ACTIONS> actions = stCopy.getAvailableActions();
+            boolean HaveLegalMovement = false;
+            if(!actions.isEmpty()){
+                for(int k = 0; k < actions.size(); k++){
+                    Types.ACTIONS action = actions.get(k);
+                    stCopy = StateStack.peek().copy();
+                    StateObservation tmp = stCopy.copy();
+                    stCopy.advance(action);
+                    if(DEBUG == true) System.out.println("action = " + action);
+                    if(IsLegalAction(stCopy.copy(),VisitedStateList)&&!tmp.equalPosition(stCopy)){
+                        if(DEBUG == true) System.out.println("LegalAction:------------" + action + " action:");
+                        StateStack.push(stCopy.copy());
+                        ActionList.add(action);
+                        HaveLegalMovement = true;
+                        break;
                     }
-                }
-                if(stCopy.isGameOver()&& stCopy.getGameWinner() == Types.WINNER.PLAYER_WINS){
-                    if(DEBUG == true){
-                        System.out.println("GameWin!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                        printObject(stCopy.copy());
-                        for(Types.ACTIONS tmpAction : ActionList){
-                            System.out.println("Action:"+ tmpAction);
-                        }
-                    }
-                    break;
-                }
-                if(HaveLegalMovement == false){
-                    if(DEBUG == true) System.out.println("Action remove! ActionList.size:" + ActionList.size());
-                    StateStack.pop();
-                    if(!ActionList.isEmpty())
-                        ActionList.remove(ActionList.size() - 1);
                 }
             }
+            if(stCopy.isGameOver()&& stCopy.getGameWinner() == Types.WINNER.PLAYER_WINS){
+                if(DEBUG == true){
+                    System.out.println("GameWin!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                    printObject(stCopy.copy());
+                    for (Types.ACTIONS tmpAction : ActionList) {
+                        System.out.println("Action:"+ tmpAction);
+                    }
+                }
+                break;
+            }
+            if(HaveLegalMovement == false){
+                if(DEBUG == true) System.out.println("Action remove! ActionList.size:" + ActionList.size());
+                StateStack.pop();
+                if(!ActionList.isEmpty())
+                    ActionList.remove(ActionList.size() - 1);
+            }
+        }
     }
 }
